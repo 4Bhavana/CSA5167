@@ -1,0 +1,55 @@
+#include<stdio.h>
+#include<string.h>
+#include<ctype.h>
+#define alpha 26
+int main()
+{
+	char c[256];
+	char p[256];
+	char k[256];
+	char d[256];
+	int ki=0;
+	scanf("%s",p);
+	scanf("%s",k);
+	int kl=strlen(k);
+	int l=strlen(p);
+	for(int i=0;i<l;i++)
+	{
+		char current=p[i];
+		if(isalpha(current))
+		{
+			char b=isupper(current)?'A':'a';
+			char n_c=tolower(current)-'a';
+			char n_k=tolower(k[ki%kl])-'a';
+			char e_c=(n_c+n_k)%alpha+'a';
+			c[i]=isupper(current)?toupper(e_c):e_c;
+			ki++;
+		}
+		else
+		{
+			c[i]=current;
+		}
+	}
+	c[l]='\0';
+	printf("%s",c);
+	ki=0;
+	for(int i=0;i<l;i++)
+	{
+		char current=c[i];
+		if(isalpha(current))
+		{
+			char b=isupper(current)?'A':'a';
+			char n_c=tolower(current)-'a';
+			char n_k=tolower(k[ki%kl])-'a';
+			char d_c=(n_c-n_k+alpha)%alpha+'a';
+			d[i]=isupper(current)?toupper(d_c):d_c;
+			ki++;
+		}
+		else
+		{
+			d[i]=current;
+		}
+	}
+	d[l]='\0';
+	printf("%s",d);
+}
