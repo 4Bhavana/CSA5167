@@ -1,0 +1,63 @@
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+
+public class DESExample {
+
+    // Method to generate a secret DES key
+    public static SecretKey generateDESKey() throws Exception {
+        KeyGenerator keyGen = KeyGenerator.getInstance("DES");
+        keyGen.init(56); // DES uses a 56-bit key size
+        return keyGen.generateKey();
+    }
+
+    // Method to encrypt a plain text using DES
+    public static String encrypt(String plainText, SecretKey secretKey) throws Exception {
+        // Create Cipher instance and initialize it to encryption mode
+        Cipher cipher = Cipher.getInstance("DES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+        // Perform encryption
+        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes());
+        
+        // Return encrypted text as Base64-encoded string
+        return Base64.getEncoder().encodeToString(encryptedBytes);
+    }
+
+    // Method to decrypt the cipher text using DES
+    public static String decrypt(String cipherText, SecretKey secretKey) throws Exception {
+        // Create Cipher instance and initialize it to decryption mode
+        Cipher cipher = Cipher.getInstance("DES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
+        // Decode the Base64-encoded cipher text and perform decryption
+        byte[] decodedBytes = Base64.getDecoder().decode(cipherText);
+        byte[] decryptedBytes = cipher.doFinal(decodedBytes);
+        
+        // Return decrypted text
+        return new String(decryptedBytes);
+    }
+
+    public static void main(String[] args) {
+        try {
+            // Sample plain text
+            String plainText = "Hello, this is a secret message!";
+            
+            // Generate a secret key for DES
+            SecretKey secretKey = generateDESKey();
+            
+            // Encrypt the plain text
+            String encryptedText = encrypt(plainText, secretKey);
+            System.out.println("Encrypted Text: " + encryptedText);
+            
+            // Decrypt the cipher text
+            String decryptedText = decrypt(encryptedText, secretKey);
+            System.out.println("Decrypted Text: " + decryptedText);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
