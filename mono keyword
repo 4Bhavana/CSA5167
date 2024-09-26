@@ -1,0 +1,106 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+void removeDuplicates(char *str) {
+    int index = 0;
+    int len = strlen(str);
+    
+    for (int i = 0; i < len; i++) {
+        int j;
+        for (j = 0; j < i; j++) {
+            if (str[i] == str[j]) {
+                break;
+            }
+        }
+        if (j == i) {
+            str[index++] = str[i];
+        }
+    }
+    str[index] = '\0';
+}
+
+void generateCipher(char *keyword, char cipher[26]) {
+    char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    int alphaIndex = 0;
+    int cipherIndex = 0;
+
+    for (int i = 0; keyword[i]; i++) {
+        keyword[i] = toupper(keyword[i]);
+    }
+
+    removeDuplicates(keyword);
+
+    for (int i = 0; keyword[i]; i++) {
+        cipher[cipherIndex++] = keyword[i];
+    }
+
+    for (int i = 0; i < 26; i++) {
+        if (!strchr(keyword, alphabet[i])) {
+            cipher[cipherIndex++] = alphabet[i];
+        }
+    }
+}
+
+void encrypt(char *plaintext, char cipher[26], char *ciphertext) {
+    for (int i = 0; plaintext[i]; i++) {
+        if (isalpha(plaintext[i])) {
+            char letter = toupper(plaintext[i]);
+            ciphertext[i] = cipher[letter - 'A'];
+        } else {
+            ciphertext[i] = plaintext[i];  
+        }
+    }
+    ciphertext[strlen(plaintext)] = '\0';
+}
+
+void decrypt(char *ciphertext, char cipher[26], char *plaintext) {
+    for (int i = 0; ciphertext[i]; i++) {
+        if (isalpha(ciphertext[i])) {
+            char letter = toupper(ciphertext[i]);
+            for (int j = 0; j < 26; j++) {
+                if (cipher[j] == letter) {
+                    plaintext[i] = 'A' + j;
+                    break;
+                }
+            }
+        } else {
+            plaintext[i] = ciphertext[i]; 
+        }
+    }
+    plaintext[strlen(ciphertext)] = '\0';
+}
+
+int main() {
+    char keyword[100];
+    char plaintext[100];
+    char ciphertext[100];
+    char decryptedtext[100];
+    char cipher[26];
+
+
+    printf("Enter the keyword: ");
+    scanf("%s", keyword);
+
+    generateCipher(keyword, cipher);
+
+  
+    printf("Cipher Sequence: ");
+    for (int i = 0; i < 26; i++) {
+        printf("%c ", cipher[i]);
+    }
+    printf("\n");
+
+    printf("Enter the plaintext: ");
+    getchar(); 
+    fgets(plaintext, sizeof(plaintext), stdin);
+    plaintext[strcspn(plaintext, "\n")] = '\0';  
+
+    encrypt(plaintext, cipher, ciphertext);
+    printf("Encrypted Text: %s\n", ciphertext);
+
+    decrypt(ciphertext, cipher, decryptedtext);
+    printf("Decrypted Text: %s\n", decryptedtext);
+
+    return 0;
+}
